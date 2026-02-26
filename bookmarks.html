@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        .tictactoe-popup {
+            transition: transform 0.5s cubic-bezier(.77, 0, .18, 1), top 0.5s cubic-bezier(.77, 0, .18, 1);
+            position: fixed;
+            left: 49%;
+            top: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 12002;
+            background: #fff;
+            border-radius: 18px;
+            padding: 24px;
+            transform: translateX(-50%) translateY(-120vh);
+        }
+
+        .tictactoe-popup.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .tictactoe-popup.hide-offscreen {
+            transform: translateX(-50%) translateY(-120vh);
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmarks</title>
+
+
+    <!-- Consolidated Styles for Organization -->
+    <style>
+        /* Whiteboard Popup Slide-down Animation */
+        .whiteboard-popup-inner {
+            position: fixed;
+            left: 0;
+            right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            top: 0;
+            transform: translateY(-100%);
+            transition: transform 0.5s cubic-bezier(.77, 0, .18, 1), top 0.5s cubic-bezier(.77, 0, .18, 1);
+            z-index: 12001;
+            max-width: 1100px;
+            width: 95vw;
+            max-height: 90vh;
+            background: #fff;
+            padding: 24px 24px 12px 24px;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .whiteboard-popup-inner.visible {
+            top: 100px;
+            transform: translateY(0);
+        }
+
+        .whiteboard-popup-inner.hide-offscreen {
+            top: 0;
+            transform: translateY(-120vh);
+        }
+
+        body {
+            background-image: url("pattern2.jpg");
+            background-repeat: repeat;
+            background-position: center;
+            font-weight: bold;
+        }
+
+        #container {
+            margin: 0 auto !important;
+            box-sizing: border-box;
+            width: 85%;
+            max-width: 3200px;
+            display: grid;
+            grid-template-columns: auto auto auto auto;
+            background-color: rgb(23, 124, 142);
+            padding: 10px;
+            border-radius: 8px;
+            transition: transform 0.5s cubic-bezier(.77, 0, .18, 1);
+        }
+
+        #container.hide-offscreen {
+            transform: translateY(-120vh);
+        }
+
+        div {
+            font-family: Arial, Helvetica, sans-serif;
+            color: rgb(27, 49, 53);
+            padding: 3rem;
+            margin: 1rem;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-family: Arial, Helvetica, sans-serif;
+            color: rgb(27, 49, 53);
+            text-align: center;
+        }
+
+        .category {
+            background-color: rgb(164, 244, 255);
+            text-align: center;
+        }
+
+        .squares-wrapper {
+            position: absolute;
+        }
+
+        .calc-bar {
+            display: flex;
+            background: rgb(255, 255, 255);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        #calculator-section input {
+            border: none;
+            padding: 10px;
+            font-size: 1rem;
+            width: 200px;
+            outline: none;
+        }
+
+        #calculator-section button {
+            background: rgb(68, 162, 179);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 8px;
+        }
+
+        /* Notes App Styles */
+        #notes-section {
+            background-color: rgb(164, 244, 255);
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            color: rgb(27, 49, 53);
+            padding: 4rem;
+            margin: 1rem;
+        }
+
+        #notes-section h2 {
+            text-align: center;
+            color: rgb(27, 49, 53);
+            margin-top: 0;
+        }
+
+        #noteInput {
+            width: 85%;
+            height: 50px;
+            margin: 10px auto;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ffffff;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            display: block;
+        }
+
+        #addNoteBtn {
+            display: block;
+            width: 85%;
+            padding: 8px;
+            background-color: rgb(68, 162, 179);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin: 10px auto;
+            font-weight: bold;
+        }
+
+
+        .notes {
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
+
+        .note {
+            background-color: #ffffff;
+            padding: 8px 40px 8px 8px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            position: relative;
+            word-wrap: break-word;
+            font-size: 0.85rem;
+            text-align: left;
+            font-weight: normal;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 50%;
+            right: 8px;
+            transform: translateY(-50%);
+            background-color: rgb(68, 162, 179);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+
+        #actionBtn,
+        #featureBtn,
+        #taskBtn,
+        #utilityBtn {
+            background-color: rgb(68, 162, 179);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+
+        /* Center list items and links inside all category sections */
+        .category ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category a {
+            color: rgb(68, 162, 179);
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.25rem 0;
+        }
+
+        /* Toggle button */
+        #menuToggle {
+            position: fixed;
+            top: 74px;
+            left: 40px;
+            z-index: 9999;
+            padding: 10px 16px;
+            background-color: rgb(23, 124, 142);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        #menuWrapper {
+            position: fixed;
+            top: 11px;
+            left: 0;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 9998;
+            display: flex;
+            justify-content: center;
+        }
+
+        #volumeControl {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        #volumeSlider {
+            width: 100px;
+        }
+
+        /* Search Bar Style */
+        .search-bar-wrapper {
+            width: 100%;
+            max-width: 3200px;
+            position: fixed;
+            left: 50%;
+            bottom: 33px;
+            transform: translateX(-50%);
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            z-index: 10001;
+            background: none;
+            pointer-events: none;
+        }
+
+        .search-bar {
+            display: flex;
+            background: rgb(255, 255, 255);
+            border-radius: 8px;
+            padding: 10px 20px;
+            align-items: center;
+            width: 1000px;
+            max-width: 90vw;
+            margin-bottom: 0;
+            pointer-events: auto;
+
+        }
+
+        .search-bar input[type="text"] {
+            border: none;
+            padding: 10px;
+            font-size: 1rem;
+            width: 100%;
+            outline: none;
+            border-radius: 8px;
+            background: transparent;
+            color: rgb(27, 49, 53);
+            font-weight: normal;
+        }
+
+        .search-bar button {
+            background: rgb(68, 162, 179);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 8px;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+    </style>
+
+    <!-- ...existing code... -->
+
+    <link rel="stylesheet" href="../style.css">
+
+</head>
+
+<body>
+    <!-- Play Button Sound -->
+
+
+    <!-- Background Music -->
+    <audio id="background-music" src="background.mp3" autoplay loop></audio>
+
+
+    <header>
+        <h1></h1>
+    </header>
+
+
+    <button id="menuToggle" style="font-weight:bold;">☰ Menu</button>
+    <button id="drawToggle"
+        style="position:fixed;top:130px;left:40px;z-index:9999;padding:10px 16px;background-color:rgb(23,124,142);color:white;border:none;border-radius:6px;cursor:pointer;font-size:1rem;font-weight:bold;">☰
+        <span style="font-weight:bold;">Draw</span></button>
+
+    <button id="playToggle"
+        style="position:fixed;top:186px;left:40px;z-index:9999;padding:10px 19px;background-color:rgb(23,124,142);color:white;border:none;border-radius:6px;cursor:pointer;font-size:1rem;font-weight:bold;">☰
+        <span style="font-weight:bold;">Play</span></button>
+    <button id="playAI"
+        style="position:fixed;top:242px;left:40px;z-index:9999;padding:10px 19px;background-color:rgb(23,124,142);color:white;border:none;border-radius:6px;cursor:pointer;font-size:1rem;font-weight:bold;">☰
+        <span style="font-weight:bold;">vsAI</span></button>
+
+
+    <!-- Tic-Tac-Toe Popup (Player vs Player) -->
+    <div id="tictactoe-popup" class="tictactoe-popup">
+        <h2 style="text-align:center;">TIC-TAC-TOE</h2>
+        <div id="tictactoe-board"
+            style="display:grid; grid-template-columns:repeat(3,60px); grid-gap:8px; justify-content:center; margin-bottom:-15px; place-items:center;">
+        </div>
+        <div id="tictactoe-status"></div>
+        <button id="tictactoe-restart"
+            style="display:block; margin:var(--restart-margin,8px auto 0 auto); background:rgb(68,162,179); color:white; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; position:relative; top:-35px; left:auto;"><span
+                style="font-weight:bold;">Restart</span></button>
+        <button id="tictactoe-close"
+            style="display:block; margin:var(--close-margin,8px auto 0 auto); background:rgb(27,49,53); color:white; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; position:relative; top:-30px; left:auto;"><span
+                style="font-weight:bold;">Close</span></button>
+    </div>
+
+    <!-- Tic-Tac-Toe Popup (Player vs AI) -->
+    <div id="tictactoeai-popup" class="tictactoe-popup">
+        <h2 style="text-align:center;">TIC-TAC-TOE vs AI</h2>
+        <div id="tictactoeai-board"
+            style="display:grid; grid-template-columns:repeat(3,60px); grid-gap:8px; justify-content:center; margin-bottom:-15px; place-items:center;">
+        </div>
+        <div id="tictactoeai-status"></div>
+        <button id="tictactoeai-restart"
+            style="display:block; margin:var(--restart-margin,8px auto 0 auto); background:rgb(68,162,179); color:white; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; position:relative; top:-35px; left:auto;"><span
+                style="font-weight:bold;">Restart</span></button>
+        <button id="tictactoeai-close"
+            style="display:block; margin:var(--close-margin,8px auto 0 auto); background:rgb(27,49,53); color:white; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; position:relative; top:-30px; left:auto;"><span
+                style="font-weight:bold;">Close</span></button>
+    </div>
+
+    <script>
+        // Slide-down toggle for whiteboard
+        document.addEventListener('DOMContentLoaded', function () {
+            const drawToggle = document.getElementById('drawToggle');
+            const whiteboard = document.getElementById('whiteboard');
+            if (drawToggle && whiteboard) {
+                drawToggle.addEventListener('click', function () {
+                    whiteboard.classList.toggle('visible');
+                });
+            }
+
+            // --- Player vs Player Tic-Tac-Toe ---
+            const playToggle = document.getElementById('playToggle');
+            const popup = document.getElementById('tictactoe-popup');
+            const boardDiv = document.getElementById('tictactoe-board');
+            const statusDiv = document.getElementById('tictactoe-status');
+            const restartBtn = document.getElementById('tictactoe-restart');
+            const closeBtn = document.getElementById('tictactoe-close');
+            let board, currentPlayer, gameActive;
+
+            function initBoard() {
+                board = Array(9).fill('');
+                currentPlayer = 'X';
+                gameActive = true;
+                renderBoard();
+                statusDiv.textContent = "Player X's Turn";
+            }
+
+            function renderBoard() {
+                boardDiv.innerHTML = '';
+                board.forEach((cell, idx) => {
+                    const cellBtn = document.createElement('button');
+                    if (cell === 'X' || cell === 'O') {
+                        cellBtn.innerHTML = `<span style='font-weight:bold;'>${cell}</span>`;
+                    } else {
+                        cellBtn.textContent = cell;
+                    }
+                    cellBtn.style.color = 'rgb(27,49,53)';
+                    cellBtn.style.width = '60px';
+                    cellBtn.style.height = '60px';
+                    cellBtn.style.fontSize = '2rem';
+                    cellBtn.style.background = 'rgb(164, 244, 255)';
+                    cellBtn.style.border = 'none';
+                    cellBtn.style.borderRadius = '18px';
+                    cellBtn.style.cursor = 'pointer';
+                    cellBtn.disabled = !!cell || !gameActive;
+                    cellBtn.addEventListener('click', () => handleMove(idx));
+                    boardDiv.appendChild(cellBtn);
+                });
+            }
+
+            function handleMove(idx) {
+                if (!gameActive || board[idx]) return;
+
+                board[idx] = currentPlayer;
+                renderBoard();
+                if (checkWin()) {
+                    statusDiv.textContent = `Player ${currentPlayer} wins!`;
+                    gameActive = false;
+                } else if (board.every(cell => cell)) {
+                    statusDiv.textContent = "It's a draw!";
+                    gameActive = false;
+                } else {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                    statusDiv.textContent = `Player ${currentPlayer}'s Turn`;
+                }
+            }
+
+            function checkWin() {
+                const wins = [
+                    [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+                    [0, 3, 6], [1, 4, 7], [2, 5, 8], // cols
+                    [0, 4, 8], [2, 4, 6] // diags
+                ];
+                return wins.some(line =>
+                    line.every(i => board[i] === currentPlayer)
+                );
+            }
+
+            // Slide-in/out for Tic-Tac-Toe popup
+            playToggle.addEventListener('click', () => {
+                popup.classList.add('visible');
+                popup.classList.remove('hide-offscreen');
+                initBoard();
+            });
+            restartBtn.addEventListener('click', initBoard);
+            closeBtn.addEventListener('click', () => {
+                popup.classList.remove('visible');
+                popup.classList.add('hide-offscreen');
+            });
+            popup.classList.add('hide-offscreen');
+
+            // --- Player vs AI Tic-Tac-Toe ---
+            const playAI = document.getElementById('playAI');
+            const popupAI = document.getElementById('tictactoeai-popup');
+            const boardDivAI = document.getElementById('tictactoeai-board');
+            const statusDivAI = document.getElementById('tictactoeai-status');
+            const restartBtnAI = document.getElementById('tictactoeai-restart');
+            const closeBtnAI = document.getElementById('tictactoeai-close');
+            let boardAI, currentPlayerAI, gameActiveAI;
+
+            function initBoardAI() {
+                boardAI = Array(9).fill('');
+                currentPlayerAI = 'X';
+                gameActiveAI = true;
+                renderBoardAI();
+                statusDivAI.textContent = "Your Turn (X)";
+                // If AI is set to start first in future, trigger here
+                if (currentPlayerAI === 'O') {
+                    setTimeout(aiMove, 500);
+                }
+            }
+
+            function renderBoardAI() {
+                boardDivAI.innerHTML = '';
+                boardAI.forEach((cell, idx) => {
+                    const cellBtn = document.createElement('button');
+                    if (cell === 'X' || cell === 'O') {
+                        cellBtn.innerHTML = `<span style='font-weight:bold;'>${cell}</span>`;
+                    } else {
+                        cellBtn.textContent = cell;
+                    }
+                    cellBtn.style.color = 'rgb(27,49,53)';
+                    cellBtn.style.width = '60px';
+                    cellBtn.style.height = '60px';
+                    cellBtn.style.fontSize = '2rem';
+                    cellBtn.style.background = 'rgb(164, 244, 255)';
+                    cellBtn.style.border = 'none';
+                    cellBtn.style.borderRadius = '18px';
+                    cellBtn.style.cursor = 'pointer';
+                    cellBtn.disabled = !!cell || !gameActiveAI || currentPlayerAI !== 'X';
+                    cellBtn.addEventListener('click', () => handleMoveAI(idx));
+                    boardDivAI.appendChild(cellBtn);
+                });
+            }
+
+            function handleMoveAI(idx) {
+                if (!gameActiveAI || boardAI[idx] || currentPlayerAI !== 'X') return;
+                boardAI[idx] = 'X';
+                renderBoardAI();
+                if (checkWinAI('X')) {
+                    statusDivAI.textContent = `You win!`;
+                    gameActiveAI = false;
+                } else if (boardAI.every(cell => cell)) {
+                    statusDivAI.textContent = "It's a draw!";
+                    gameActiveAI = false;
+                } else {
+                    currentPlayerAI = 'O';
+                    statusDivAI.textContent = "AI's Turn (O)";
+                    setTimeout(aiMove, 500);
+                }
+            }
+
+            function aiMove() {
+                if (!gameActiveAI) return;
+                const best = minimax(boardAI, 'O');
+                if (best && typeof best.index === 'number') {
+                    boardAI[best.index] = 'O';
+                }
+                if (checkWinAI('O')) {
+                    renderBoardAI();
+                    statusDivAI.textContent = `AI wins!`;
+                    gameActiveAI = false;
+                } else if (boardAI.every(cell => cell)) {
+                    renderBoardAI();
+                    statusDivAI.textContent = "It's a draw!";
+                    gameActiveAI = false;
+                } else {
+                    currentPlayerAI = 'X';
+                    renderBoardAI();
+                    statusDivAI.textContent = "Your Turn (X)";
+                }
+            }
+
+            function checkWinAI(player) {
+                const wins = [
+                    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                    [0, 4, 8], [2, 4, 6]
+                ];
+                return wins.some(line =>
+                    line.every(i => boardAI[i] === player)
+                );
+            }
+
+            function minimax(newBoard, player) {
+                const availSpots = newBoard.map((v, i) => v === '' ? i : null).filter(i => i !== null);
+                if (checkWinMinimax(newBoard, 'X')) {
+                    return { score: -10 };
+                } else if (checkWinMinimax(newBoard, 'O')) {
+                    return { score: 10 };
+                } else if (availSpots.length === 0) {
+                    return { score: 0 };
+                }
+                let moves = [];
+                for (let i = 0; i < availSpots.length; i++) {
+                    let move = {};
+                    move.index = availSpots[i];
+                    newBoard[availSpots[i]] = player;
+                    if (player === 'O') {
+                        let result = minimax(newBoard, 'X');
+                        move.score = result.score;
+                    } else {
+                        let result = minimax(newBoard, 'O');
+                        move.score = result.score;
+                    }
+                    newBoard[availSpots[i]] = '';
+                    moves.push(move);
+                }
+                let bestMove;
+                if (player === 'O') {
+                    let bestScore = -Infinity;
+                    for (let i = 0; i < moves.length; i++) {
+                        if (moves[i].score > bestScore) {
+                            bestScore = moves[i].score;
+                            bestMove = i;
+                        }
+                    }
+                } else {
+                    let bestScore = Infinity;
+                    for (let i = 0; i < moves.length; i++) {
+                        if (moves[i].score < bestScore) {
+                            bestScore = moves[i].score;
+                            bestMove = i;
+                        }
+                    }
+                }
+                return moves[bestMove];
+            }
+
+            function checkWinMinimax(b, player) {
+                const wins = [
+                    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                    [0, 4, 8], [2, 4, 6]
+                ];
+                return wins.some(line =>
+                    line.every(i => b[i] === player)
+                );
+            }
+
+            // Slide-in/out for Tic-Tac-Toe AI popup
+            playAI.addEventListener('click', () => {
+                popupAI.classList.add('visible');
+                popupAI.classList.remove('hide-offscreen');
+                initBoardAI();
+            });
+            restartBtnAI.addEventListener('click', initBoardAI);
+            closeBtnAI.addEventListener('click', () => {
+                popupAI.classList.remove('visible');
+                popupAI.classList.add('hide-offscreen');
+            });
+            popupAI.classList.add('hide-offscreen');
+        });
+    </script>
+
+    <style>
+        /* Whiteboard slide-down animation */
+        #whiteboard {
+            display: none;
+            position: fixed;
+            left: 30%;
+            top: 0;
+            transform: translateX(-30%) translateY(-100%);
+            z-index: 9000;
+            background: #fff !important;
+            opacity: 1 !important;
+            transition: transform 0.5s cubic-bezier(.77, 0, .18, 1), top 0.5s cubic-bezier(.77, 0, .18, 1);
+        }
+
+        #whiteboard.visible {
+            display: block;
+            top: 100px;
+            transform: translateX(-80%) translateY(0);
+        }
+    </style>
+
+    <!-- ...existing code... -->
+
+
+    <!-- Search Bar (fixed at bottom of screen) -->
+    <div class="search-bar-wrapper">
+        <form class="search-bar" id="bookmarkSearchForm" onsubmit="event.preventDefault();">
+            <input type="text" id="bookmarkSearchInput" placeholder="Search bookmarks..." aria-label="Search Bookmarks"
+                autocomplete="off">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div id="menuWrapper" class="open">
+        <div id="container" class="hide-offscreen">
+
+            <div id="genshin" class="category">
+                <h2>GENSHIN IMPACT</h2>
+                <ul>
+                    <li><a href="https://act.hoyolab.com/ys/event/signin-sea-v3/index.html?act_id=e202102251931481&lang=en-us"
+                            target="_blank" rel="noopener noreferrer">Daily Login</a></li>
+                    <li><a href="https://game8.co/games/Genshin-Impact/archives/530535" target="_blank"
+                            rel="noopener noreferrer">Character Builds</a></li>
+                    <li><a href="https://act.hoyolab.com/ys/app/interactive-map/index.html?lang=en-us#/map/2?shown_types=626,694,356,17,44,45,46,269,577,703,18,70,64,71,77,79,69,67,72,73,65,74,68,83,66,75,597,598,599,600,663,667,668,680,683,688,711,712,713,714,715,716,717,718,719,720,721,722,410,490&center=4945.56,-7539.14&zoom=-2.00"
+                            target="_blank" rel="noopener noreferrer">Interactive Map</a></li>
+                </ul>
+            </div>
+
+            <div id="riot" class="category">
+                <h2>RIOT GAMES</h2>
+                <ul>
+                    <li><a href="https://www.riotgames.com/en/news" target="_blank" rel="noopener noreferrer">Job
+                            Market</a></li>
+                    <li><a href="https://op.gg/lol/champions" target="_blank" rel="noopener noreferrer">Champion
+                            Builds</a>
+                    </li>
+                    <li><a href="https://blitz.gg/lol" target="_blank" rel="noopener noreferrer">Player Tracker</a>
+                </ul>
+            </div>
+
+            <div id="social" class="category">
+                <h2>SOCIAL MEDIA</h2>
+                <ul>
+                    <li><a href="https://x.com/home" target="_blank" rel="noopener noreferrer">Twitter</a></li>
+                    <li><a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
+                    </li>
+                    <li><a href="https://discord.com/" target="_blank" rel="noopener noreferrer">Discord</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="comms" class="category">
+                <h2>COMMISSIONS</h2>
+                <ul>
+                    <li><a href="https://carrd.co/dashboard" target="_blank" rel="noopener noreferrer">Card</a>
+                    </li>
+                    <li><a href="https://app.milanote.com/1Uwvl11BmZ2ntN/home" target="_blank"
+                            rel="noopener noreferrer">Milanote</a></li>
+                    <li><a href="https://ko-fi.com/" target="_blank" rel="noopener noreferrer">Kofi</a></li>
+                </ul>
+            </div>
+
+            <div id="refs" class="category">
+                <h2>REFERENCES</h2>
+                <ul>
+                    <li><a href="https://www.pinterest.com/" target="_blank" rel="noopener noreferrer">Pinterest</a>
+                    </li>
+                    <li><a href="https://www.animal-photo-references.com/" target="_blank"
+                            rel="noopener noreferrer">Animal References</a>
+                    </li>
+                    <li><a href="https://x6ud.github.io/#/" target="_blank" rel="noopener noreferrer">Skull Rotation</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="school" class="category">
+                <h2>SCHOOL</h2>
+                <ul>
+                    <li><a href="https://nova.otava.fi/dashboard" target="_blank" rel="noopener noreferrer">Nova</a>
+                    </li>
+                    <li><a href="https://moodle.tuni.fi/" target="_blank" rel="noopener noreferrer">Tuni Moodle</a></li>
+                    </li>
+                    <li><a href="https://peppi-student.tuni.fi/" target="_blank" rel="noopener noreferrer">Tuni
+                            Pakki</a></li>
+                </ul>
+            </div>
+
+            <div id="calculator-section" class="category">
+                <h2>CALCULATOR</h2>
+                <div class="calc-bar">
+                    <input type="text" id="expression" placeholder="Type e.g. 12+7*3">
+                    <button onclick="calculate()" style="font-weight:bold;">=</button>
+                </div>
+            </div>
+
+            <div id="notes-section" class="category">
+                <h2>NOTES</h2>
+                <textarea id="noteInput" placeholder="Write your note here..."></textarea>
+                <button id="addNoteBtn" onclick="addNote()">Add Note</button>
+                <div class="notes" id="notesContainer"></div>
+                <div class="notes" id="notesContainer2"></div>
+            </div>
+
+            <div id="action-section" class="category">
+                <h2>BOOM</h2>
+                <button id="actionBtn" onclick="handleAction()">Click</button>
+            </div>
+
+            <div id="feature-section" class="category">
+                <h2>DUCK</h2>
+                <button id="featureBtn" onclick="handleFeature()">Click</button>
+            </div>
+
+            <div id="task-section" class="category">
+                <h2>HONK</h2>
+                <button id="taskBtn" onclick="handleTask()">Click</button>
+            </div>
+
+            <div id="utility-section" class="category">
+                <h2>POP</h2>
+                <button id="utilityBtn" onclick="handleUtility()">Click</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Scripts: Grouped and Cleaned Up -->
+    <script>
+        // --- Draw Button Logic (only toggles whiteboard) ---
+        // --- Whiteboard Drawing Functions ---
+        const whiteboard = document.getElementById('whiteboard');
+        if (whiteboard) {
+            // Set canvas size to match window
+            function resizeWhiteboard() {
+                whiteboard.width = Math.min(window.innerWidth * 0.9, 1200);
+                whiteboard.height = 500;
+            }
+            resizeWhiteboard();
+            window.addEventListener('resize', resizeWhiteboard);
+            const ctx = whiteboard.getContext('2d');
+            let drawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            function getPos(e) {
+                const rect = whiteboard.getBoundingClientRect();
+                if (e.touches && e.touches.length === 1) {
+                    return {
+                        x: e.touches[0].clientX - rect.left,
+                        y: e.touches[0].clientY - rect.top
+                    };
+                } else {
+                    return {
+                        x: e.clientX - rect.left,
+                        y: e.clientY - rect.top
+                    };
+                }
+            }
+            function startDraw(e) {
+                drawing = true;
+                const pos = getPos(e);
+                lastX = pos.x;
+                lastY = pos.y;
+            }
+            function draw(e) {
+                if (!drawing) return;
+                e.preventDefault();
+                const pos = getPos(e);
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+                lastX = pos.x;
+                lastY = pos.y;
+            }
+            function stopDraw() {
+                drawing = false;
+            }
+            whiteboard.addEventListener('mousedown', startDraw);
+            whiteboard.addEventListener('mousemove', draw);
+            whiteboard.addEventListener('mouseup', stopDraw);
+            whiteboard.addEventListener('mouseout', stopDraw);
+            whiteboard.addEventListener('touchstart', startDraw, { passive: false });
+            whiteboard.addEventListener('touchmove', draw, { passive: false });
+            whiteboard.addEventListener('touchend', stopDraw);
+        }
+
+        // --- Audio Functions ---
+        function playClick() {
+        }
+        function playHonk() {
+            const audio = new Audio("honk.mp3");
+            audio.volume = 1.0;
+            audio.play();
+        }
+        function playBoop() {
+            const audio = new Audio("boop.mp3");
+            audio.volume = 1.0;
+            audio.play();
+        }
+        function playPop() {
+            const audio = new Audio("pop.mp3");
+            audio.volume = 1.0;
+            audio.play();
+        }
+        function playBoom() {
+            const audio = new Audio("boom.mp3");
+            audio.volume = 1.0;
+            audio.play();
+        }
+
+        // --- Calculator ---
+        function calculate() {
+            const expr = document.getElementById('expression').value;
+            try {
+                const result = eval(expr);
+                document.getElementById('expression').value = result;
+            } catch {
+                document.getElementById('expression').value = 'Error';
+            }
+        }
+
+        // --- Notes App ---
+        function addNote() {
+            const noteInput = document.getElementById('noteInput');
+            const notesContainer = document.getElementById('notesContainer');
+            if (noteInput.value.trim() !== "") {
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'note';
+                const noteText = document.createElement('span');
+                noteText.textContent = noteInput.value;
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.addEventListener('click', function () {
+                    playClick();
+                    noteDiv.remove();
+                    saveNotes();
+                });
+                noteDiv.appendChild(noteText);
+                noteDiv.appendChild(deleteBtn);
+                notesContainer.appendChild(noteDiv);
+                noteInput.value = "";
+                saveNotes();
+            } else {
+                alert("Reminder: A note cannot be empty.");
+            }
+        }
+        function saveNotes() {
+            const notesContainer = document.getElementById('notesContainer');
+            const notes = [];
+            notesContainer.querySelectorAll('.note span').forEach(noteElement => {
+                notes.push(noteElement.textContent);
+            });
+            localStorage.setItem('savedNotes', JSON.stringify(notes));
+        }
+        function loadNotes() {
+            const savedNotes = localStorage.getItem('savedNotes');
+            if (savedNotes) {
+                const notes = JSON.parse(savedNotes);
+                const notesContainer = document.getElementById('notesContainer');
+                notes.forEach(noteText => {
+                    const noteDiv = document.createElement('div');
+                    noteDiv.className = 'note';
+                    const noteSpan = document.createElement('span');
+                    noteSpan.textContent = noteText;
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'delete-btn';
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.addEventListener('click', function () {
+                        playClick();
+                        noteDiv.remove();
+                        saveNotes();
+                    });
+                    noteDiv.appendChild(noteSpan);
+                    noteDiv.appendChild(deleteBtn);
+                    notesContainer.appendChild(noteDiv);
+                });
+            }
+        }
+
+        // --- Button Handlers ---
+        function handleAction() { playBoom(); }
+        function handleFeature() { playHonk(); }
+        function handleTask() { playBoop(); }
+        function handleUtility() { playPop(); }
+
+        // --- Menu Toggle ---
+        document.addEventListener('DOMContentLoaded', function () {
+            // Attach click sound to all buttons except the special ones, menuToggle, drawToggle, and closeWhiteboard
+            const buttons = document.querySelectorAll('button:not(#actionBtn):not(#featureBtn):not(#taskBtn):not(#utilityBtn):not(#menuToggle):not(#drawToggle):not(#closeWhiteboard)');
+            buttons.forEach(button => {
+                button.addEventListener('click', playClick);
+            });
+            document.getElementById("menuToggle").addEventListener("click", () => {
+                document.getElementById("container").classList.toggle("hide-offscreen");
+            });
+            // Load notes
+            loadNotes();
+        });
+        // --- Bookmark Search Functionality ---
+        function filterBookmarks(query) {
+            const search = query.trim().toLowerCase();
+            // Remove previous highlights
+            document.querySelectorAll('.category ul a').forEach(link => {
+                link.innerHTML = link.textContent;
+            });
+            if (!search) return;
+            document.querySelectorAll('.category ul a').forEach(link => {
+                const text = link.textContent;
+                const lower = text.toLowerCase();
+                const idx = lower.indexOf(search);
+                if (idx !== -1) {
+                    const before = text.slice(0, idx);
+                    const match = text.slice(idx, idx + search.length);
+                    const after = text.slice(idx + search.length);
+                    link.innerHTML = `${before}<span class="search-highlight">${match}</span>${after}`;
+                }
+            });
+        }
+        // Highlight style for search
+        const style = document.createElement('style');
+        style.textContent = `.search-highlight { background: yellow; color: rgb(27, 49, 53); border-radius: 3px; padding: 0 2px; }`;
+        document.head.appendChild(style);
+        const searchInput = document.getElementById('bookmarkSearchInput');
+        const searchForm = document.getElementById('bookmarkSearchForm');
+        if (searchInput && searchForm) {
+            searchInput.addEventListener('input', function () {
+                filterBookmarks(this.value);
+            });
+            searchForm.addEventListener('submit', function (e) {
+                filterBookmarks(searchInput.value);
+            });
+        }
+    </script>
+
+    <!-- ...existing code... -->
+
+    <!-- Whiteboard Popup Overlay -->
+    <div id="whiteboardPopup" class="whiteboard-popup"
+        style="display:none;position:fixed;left:0;width:100vw;height:100vh;background:none;z-index:12000;justify-content:center;align-items:flex-start;">
+        <div class="whiteboard-popup-inner">
+            <button id="closeWhiteboard"
+                style="position:absolute;top:12px;right:12px;background:#fff;border:none;border-radius:50%;width:36px;height:36px;font-size:1.2rem;cursor:pointer;z-index:2;font-weight:bold;">&times;</button>
+            <div
+                style="display:flex;align-items:center;gap:12px;margin-bottom:2px;margin-top:-40px;width:100%;justify-content:space-between;">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                    <label for="penSizeSlider" style="font-size:0.9rem;margin-bottom:4px;">Pen Size</label>
+                    <input type="range" id="penSizeSlider" min="1" max="16" value="2" style="width:60px;">
+                </div>
+                <div id="whiteboardTools" style="display:flex;gap:12px;">
+                    <button id="penTool"
+                        style="padding:6px 16px;border-radius:8px;border:none;background:#44a2b3;color:#fff;cursor:pointer;font-weight:bold;">Pen</button>
+                    <button id="eraserTool"
+                        style="padding:6px 16px;border-radius:8px;border:none;background:rgb(23,124,142);color:#fff;cursor:pointer;font-weight:bold;">Eraser</button>
+                    <button id="resetTool"
+                        style="padding:6px 16px;border-radius:8px;border:none;background:rgb(27,49,53);color:#fff;cursor:pointer;font-weight:bold;">Reset</button>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                    <label for="eraserSizeSlider" style="font-size:0.9rem;margin-bottom:4px;">Eraser Size</label>
+                    <input type="range" id="eraserSizeSlider" min="8" max="48" value="16" style="width:60px;">
+                </div>
+            </div>
+            <canvas id="popupWhiteboard" width="1000" height="500"
+                style="background:#fff;border-radius:12px;width:100%;max-width:1000px;max-height:500px;"></canvas>
+        </div>
+    </div>
+
+    <!-- Scripts at the end for clarity and function -->
+    <script>
+        // --- Whiteboard Popup Logic ---
+        const drawToggle = document.getElementById('drawToggle');
+        const whiteboardPopup = document.getElementById('whiteboardPopup');
+        const closeWhiteboard = document.getElementById('closeWhiteboard');
+        let whiteboardOpen = false;
+        const whiteboardPopupInner = document.querySelector('.whiteboard-popup-inner');
+        function openWhiteboardPopup() {
+            whiteboardOpen = true;
+            whiteboardPopup.style.display = 'flex';
+            // Reset pen and eraser size sliders to their minimum value
+            const penSlider = document.getElementById('penSizeSlider');
+            const eraserSlider = document.getElementById('eraserSizeSlider');
+            if (penSlider) penSlider.value = penSlider.min;
+            if (eraserSlider) eraserSlider.value = eraserSlider.min;
+            setTimeout(() => {
+                whiteboardPopupInner.classList.add('visible');
+                whiteboardPopupInner.classList.remove('hide-offscreen');
+            }, 10);
+        }
+        function closeWhiteboardPopup() {
+            whiteboardOpen = false;
+            whiteboardPopupInner.classList.remove('visible');
+            whiteboardPopupInner.classList.add('hide-offscreen');
+            const handleTransitionEnd = () => {
+                whiteboardPopup.style.display = 'none';
+                whiteboardPopupInner.removeEventListener('transitionend', handleTransitionEnd);
+            };
+            whiteboardPopupInner.addEventListener('transitionend', handleTransitionEnd);
+        }
+        drawToggle.addEventListener('click', () => {
+            if (!whiteboardOpen) {
+                openWhiteboardPopup();
+            }
+            // Do nothing if already open
+        });
+        if (closeWhiteboard) {
+            closeWhiteboard.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeWhiteboardPopup();
+            });
+        }
+        whiteboardPopup.addEventListener('click', (e) => {
+            if (e.target === whiteboardPopup) {
+                whiteboardPopup.style.display = 'none';
+            }
+        });
+
+        // --- Popup Whiteboard Drawing ---
+        const popupCanvas = document.getElementById('popupWhiteboard');
+        if (popupCanvas) {
+            const ctx = popupCanvas.getContext('2d');
+            let drawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            let tool = 'pen';
+            // Swapped pen and eraser functions
+            const penColor = '#222';
+            const eraserColor = '#fff';
+            let penWidth = 2;
+            let eraserWidth = 16;
+            function getPos(e) {
+                const rect = popupCanvas.getBoundingClientRect();
+                if (e.touches && e.touches.length === 1) {
+                    return {
+                        x: e.touches[0].clientX - rect.left,
+                        y: e.touches[0].clientY - rect.top
+                    };
+                } else {
+                    return {
+                        x: e.clientX - rect.left,
+                        y: e.clientY - rect.top
+                    };
+                }
+            }
+            let drawSound;
+            function startDraw(e) {
+                drawing = true;
+                if (tool === 'pen' || tool === 'eraser') {
+                    drawSound = null;
+                }
+                const pos = getPos(e);
+                lastX = pos.x;
+                lastY = pos.y;
+            }
+            function draw(e) {
+                if (!drawing) return;
+                e.preventDefault();
+                const pos = getPos(e);
+                ctx.strokeStyle = tool === 'pen' ? penColor : eraserColor;
+                ctx.lineWidth = tool === 'pen' ? penWidth : eraserWidth;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+                lastX = pos.x;
+                lastY = pos.y;
+            }
+
+            // Pen/Eraser size sliders
+            const penSizeSlider = document.getElementById('penSizeSlider');
+            const eraserSizeSlider = document.getElementById('eraserSizeSlider');
+            penSizeSlider.addEventListener('input', function () {
+                penWidth = parseInt(this.value, 10);
+            });
+            eraserSizeSlider.addEventListener('input', function () {
+                eraserWidth = parseInt(this.value, 10);
+            });
+            function stopDraw() {
+                drawing = false;
+                if (drawSound) {
+                    drawSound.pause();
+                    drawSound.currentTime = 0;
+                    drawSound = null;
+                }
+            }
+            function resetWhiteboard() {
+                ctx.clearRect(0, 0, popupCanvas.width, popupCanvas.height);
+            }
+            // Tool button logic
+            // Default: pen tool selected
+            document.getElementById('penTool').style.background = '#44a2b3';
+            document.getElementById('eraserTool').style.background = '#aaa';
+            document.getElementById('penTool').addEventListener('click', function () {
+                tool = 'pen';
+                this.style.background = '#44a2b3';
+                document.getElementById('eraserTool').style.background = '#aaa';
+            });
+            document.getElementById('eraserTool').addEventListener('click', function () {
+                tool = 'eraser';
+                this.style.background = '#44a2b3';
+                document.getElementById('penTool').style.background = '#aaa';
+            });
+            document.getElementById('resetTool').addEventListener('click', function () {
+                resetWhiteboard();
+            });
+            // Drawing events
+            popupCanvas.addEventListener('mousedown', startDraw);
+            popupCanvas.addEventListener('mousemove', draw);
+            popupCanvas.addEventListener('mouseup', stopDraw);
+            popupCanvas.addEventListener('mouseout', stopDraw);
+            popupCanvas.addEventListener('touchstart', startDraw, { passive: false });
+            popupCanvas.addEventListener('touchmove', draw, { passive: false });
+            popupCanvas.addEventListener('touchend', stopDraw);
+        }
+
+        // --- Background Whiteboard Drawing ---
+        (function () {
+            const whiteboard = document.getElementById('whiteboard');
+            if (whiteboard) {
+                function resizeWhiteboard() {
+                    whiteboard.width = Math.min(window.innerWidth * 0.9, 1200);
+                    whiteboard.height = 500;
+                }
+                resizeWhiteboard();
+                window.addEventListener('resize', resizeWhiteboard);
+                const ctx = whiteboard.getContext('2d');
+                let drawing = false;
+                let lastX = 0;
+                let lastY = 0;
+                function getPos(e) {
+                    const rect = whiteboard.getBoundingClientRect();
+                    if (e.touches && e.touches.length === 1) {
+                        return {
+                            x: e.touches[0].clientX - rect.left,
+                            y: e.touches[0].clientY - rect.top
+                        };
+                    } else {
+                        return {
+                            x: e.clientX - rect.left,
+                            y: e.clientY - rect.top
+                        };
+                    }
+                }
+                function startDraw(e) {
+                    drawing = true;
+                    const pos = getPos(e);
+                    lastX = pos.x;
+                    lastY = pos.y;
+                }
+                function draw(e) {
+                    if (!drawing) return;
+                    e.preventDefault();
+                    const pos = getPos(e);
+                    // Swapped pen color to white
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 2;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(pos.x, pos.y);
+                    ctx.stroke();
+                    lastX = pos.x;
+                    lastY = pos.y;
+                }
+                function stopDraw() {
+                    drawing = false;
+                }
+                whiteboard.addEventListener('mousedown', startDraw);
+                whiteboard.addEventListener('mousemove', draw);
+                whiteboard.addEventListener('mouseup', stopDraw);
+                whiteboard.addEventListener('mouseout', stopDraw);
+                whiteboard.addEventListener('touchstart', startDraw, { passive: false });
+                whiteboard.addEventListener('touchmove', draw, { passive: false });
+                whiteboard.addEventListener('touchend', stopDraw);
+            }
+        })();
+    </script>
+</body>
+
+</html>
