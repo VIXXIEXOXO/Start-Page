@@ -91,20 +91,43 @@
 }
 
 /* --- Main Container Grid --- */
+/* --- Main Container Grid --- */
 #container {
-    padding: 2% !important;
-    /* your intended padding */
+    padding: 2vw !important;
     margin: 0 auto !important;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(20vw, 1fr));
+    gap: 2vw;
+    width: 100vw;
+    max-width: 1200px;
+    box-sizing: border-box;
 }
 
 /* --- Responsive Div Padding --- */
 @media (max-width: 900px) {
     div {
-        padding: 1.5rem;
-        margin: 0.5rem;
+        padding: 2vw;
+        margin: 1vw;
+        font-size: 2vw;
+    }
+    #container {
+        grid-template-columns: repeat(auto-fit, minmax(40vw, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    div {
+        padding: 3vw;
+        margin: 2vw;
+        font-size: 3vw;
+    }
+    #container {
+        grid-template-columns: 1fr;
+    }
+    #notes-section, #calculator-section {
+        padding: 2vw;
+        margin: 1vw;
+        max-width: 100vw;
     }
 }
 
