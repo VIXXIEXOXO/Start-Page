@@ -1,28 +1,28 @@
 /* --- TicTacToe Status Positioning --- */
 #tictactoe-status {
     text-align: center;
-    margin-bottom: 12px;
-    width: 100%;
+    margin-bottom: 2vw;
+    width: 100vw;
     position: relative;
-    top: -35px;
+    top: -3vw;
     /* Move up, adjust as needed */
-    font-size: 1.2rem;
+    font-size: 2vw;
     font-weight: bold;
 }
 
 /* --- Whiteboard Canvas Styles (background, always visible) --- */
 #whiteboard {
     position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    left: 50vw;
+    top: 50vw;
+    transform: translate(-50vw, -50vw);
     z-index: 1;
     background: #fff !important;
-    border-radius: 16px;
+    border-radius: 1vw;
     /* box-shadow removed */
-    max-width: 1200px;
+    max-width: 80vw;
     width: 90vw;
-    height: 500px;
+    height: 40vw;
     pointer-events: auto;
     opacity: 1 !important;
 }
@@ -38,15 +38,15 @@
 /* --- Play/Pause Icon Custom Positioning --- */
 .icon-movable svg {
     position: relative;
-    top: var(--icon-top, 0px);
-    left: var(--icon-left, 0px);
+    top: var(--icon-top, 0vw);
+    left: var(--icon-left, 0vw);
 }
 
 /* Move play/pause icon down reliably */
 .dark-play-pause svg {
     display: block;
-    margin: 8px auto auto auto;
-    margin-top: 14px;
+    margin: 0.5vw auto auto auto;
+    margin-top: 1vw;
 }
 
 /* --- Dark Play/Pause Button --- */
@@ -54,8 +54,8 @@
     background: #fff;
     border: none;
     border-radius: 0;
-    width: 48px;
-    height: 48px;
+    width: 4vw;
+    height: 4vw;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -73,70 +73,70 @@
 /* --- Menu Wrapper --- */
 #menuWrapper {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    max-height: 90vh;
+    top: 0vw;
+    left: 0vw;
+    width: 100vw;
+    max-height: 90vw;
     overflow-y: auto;
     transition: top 0.35s ease;
     z-index: 9998;
     display: flex;
     justify-content: center;
-    padding: 0 !important;
-    margin: 0 !important;
+    padding: 0vw !important;
+    margin: 0vw !important;
 }
 
 .menu-hidden {
-    top: -100vh !important;
+    top: -100vw !important;
 }
 
 /* --- Main Container Grid --- */
 /* --- Main Container Grid --- */
 #container {
-    padding: 2% !important;
+    padding: 2vw !important;
     margin: 0 auto !important;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    width: 100%;
-    max-width: 1200px;
+    grid-template-columns: repeat(auto-fit, minmax(20vw, 1fr));
+    gap: 2vw;
+    width: 100vw;
+    max-width: 80vw;
     box-sizing: border-box;
 }
 
 /* --- Responsive Div Padding --- */
 @media (max-width: 900px) {
     div {
-        padding: 1rem;
-        margin: 0.5rem;
-        font-size: 1rem;
+        padding: 2vw;
+        margin: 1vw;
+        font-size: 2vw;
     }
     #container {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(15vw, 1fr));
     }
 }
 
 @media (max-width: 600px) {
     div {
-        padding: 0.5rem;
-        margin: 0.25rem;
-        font-size: 0.9rem;
+        padding: 1vw;
+        margin: 0.5vw;
+        font-size: 1.5vw;
     }
     #container {
         grid-template-columns: 1fr;
     }
     #notes-section, #calculator-section {
-        padding: 1rem;
-        margin: 0.5rem;
-        max-width: 100%;
+        padding: 2vw;
+        margin: 1vw;
+        max-width: 100vw;
     }
 }
 
 /* --- Notes Section --- */
 #notes-section {
-    max-width: 90%;
+    max-width: 90vw;
     margin: 0 auto;
     /* centers the whole notes block */
-    padding: 0;
+    padding: 0vw;
     /* removes extra padding pushing it off alignment */
 }
 
@@ -148,6 +148,6 @@
 
 /* --- Calculator Section --- */
 #calculator-section {
-    max-width: 90%;
+    max-width: 90vw;
     margin: 0 auto;
 }
